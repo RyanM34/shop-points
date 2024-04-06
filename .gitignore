@@ -17,4 +17,4 @@ buildNumber.properties
 .classpath
 
 # Log file
-data
+data/
