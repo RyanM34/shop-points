@@ -60,6 +60,7 @@ public class ShopRepository implements IShopRepository {
                 .customerId(transaction.getCustomerId())
                 .transactionId(transaction.getTransactionId())
                 .amount(transaction.getAmount())
+                .issuedAt(transaction.getIssuedAt())
                 .build();
     }
 
