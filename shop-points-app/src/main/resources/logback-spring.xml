@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Log levels from low to high are TRACE < DEBUG < INFO < WARN < ERROR < FATAL. If set to WARN, information lower than WARN level will not be output. -->
+<configuration scan="true" scanPeriod="10 seconds">
+
+    <contextName>logback</contextName>
+    <!-- The value of 'name' is the name of the variable, and the value of 'value' is the value defined by the variable. The defined value will be inserted into the logger context. After defining the variable, you can use "${}" to use the variable. -->
+    <springProperty scope="context" name="log.path" source="logging.path"/>
+    <!-- Log format -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <!-- Output to console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- This log appender is for development use. Only the lowest level is configured. The log level output to the console is log information greater than or equal to this level. -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>info</level>
+        </filter>
+        <encoder>
+            <pattern>%d{yy-MM-dd.HH:mm:ss.SSS} [%-16t] %-5p %-22c{0}%X{ServiceId} -%X{trace-id} %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Output to files -->
+    <!-- Time-rolling output level is INFO log -->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Path and file name of the log file being recorded -->
+        <file>./data/log/log_info.log</file>
+        <!-- Log file output format -->
+        <encoder>
+            <pattern>%d{yy-MM-dd.HH:mm:ss.SSS} [%-16t] %-5p %-22c{0}%X{ServiceId} -%X{trace-id} %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- Log record rolling policy, by date, by size record -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- Archive path and format of log files per day -->
+            <fileNamePattern>./data/log/log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- Number of days to keep log files -->
+            <maxHistory>15</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Time-rolling output level is ERROR log -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- Path and file name of the log file being recorded -->
+        <file>./data/log/log_error.log</file>
+        <!-- Log file output format -->
+        <encoder>
+            <pattern>%d{yy-MM-dd.HH:mm:ss.SSS} [%-16t] %-5p %-22c{0}%X{ServiceId} -%X{trace-id} %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- Log record rolling policy, by date, by size record -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./data/log/log-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!-- Number of days to keep log files -->
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>5GB</totalSizeCap>
+        </rollingPolicy>
+        <!-- WARN level and above -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+    </appender>
+
+    <!-- Asynchronous output -->
+    <appender name="ASYNC_FILE_INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- If the remaining capacity of the queue is less than discardingThreshold, TRACT, DEBUG, INFO level logs will be discarded; the default value is -1, which is 20% of queueSize; 0 does not discard logs -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- Change the default depth of the queue, which will affect performance. The default value is 256 -->
+        <queueSize>8192</queueSize>
+        <!-- neverBlock:true will discard logs, but business performance will not be affected -->
+        <neverBlock>true</neverBlock>
+        <!-- Whether to extract caller data -->
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="INFO_FILE"/>
+    </appender>
+
+    <appender name="ASYNC_FILE_ERROR" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- If the remaining capacity of the queue is less than discardingThreshold, TRACT, DEBUG, INFO level logs will be discarded; the default value is -1, which is 20% of queueSize; 0 does not discard logs -->
+        <discardingThreshold>0</discardingThreshold>
+        <!-- Change the default depth of the queue, which will affect performance. The default value is 256 -->
+        <queueSize>1024</queueSize>
+        <!-- neverBlock:true will discard logs, but business performance will not be affected -->
+        <neverBlock>true</neverBlock>
+        <!-- Whether to extract caller data -->
+        <includeCallerData>false</includeCallerData>
+        <appender-ref ref="ERROR_FILE"/>
+    </appender>
+
+    <!-- Development environment: console print -->
+    <springProfile name="dev">
+        <logger name="com.nmys.view" level="debug"/>
+    </springProfile>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE"/>
+        <!-- Asynchronous log-INFO -->
+        <appender-ref ref="ASYNC_FILE_INFO"/>
+        <!-- Asynchronous log-ERROR -->
+        <appender-ref ref="ASYNC_FILE_ERROR"/>
+    </root>
+
+</configuration>
