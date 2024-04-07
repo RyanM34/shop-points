@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RewardPointsEntity {
     private int lastMonth;
-    private int lastLastMonth;
-    private int lastLastLastMonth;
+    private int twoMonthsAgo;
+    private int threeMonthsAgo;
     private int total;
 }

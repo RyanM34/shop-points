@@ -1,5 +1,7 @@
 package coding.task.shoppoints.domain.reward.service.calculation.impl;
 
+import coding.task.shoppoints.common.exceptions.NegativeTransactionAmountException;
+import coding.task.shoppoints.common.exceptions.RewardPointsCalculationOverflowException;
 import coding.task.shoppoints.domain.reward.model.entity.RewardPointsEntity;
 import coding.task.shoppoints.domain.reward.model.entity.RewardTransactionEntity;
 import coding.task.shoppoints.domain.reward.service.calculation.IRewardCalculation;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,24 +35,36 @@ public class BaseRewardCalculation extends RewardCalculationBase implements IRew
     @Override
     public RewardPointsEntity doCalculation(Long customerId) {
         List<RewardTransactionEntity> transactions = this.getRecentThreeMonthsTransactions(customerId);
-        LocalDateTime lastMonth = LocalDateTime.now().minusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime lastLastMonth = LocalDateTime.now().minusMonths(2).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        int[] points = new int[3];
+        // set currentMonthStart to Month/01/00:00:00:000
+        LocalDateTime currentMonthStart = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime lastMonthStart = currentMonthStart.minusMonths(1);
+        LocalDateTime twoMonthsAgoStart = currentMonthStart.minusMonths(2);
+        LocalDateTime threeMonthsAgoStart = currentMonthStart.minusMonths(3);
+
+        long[] points = new long[3];
         transactions.forEach(t -> {
-            if (t.getIssuedAt().isAfter(lastMonth)) {
+            // calculate last month transaction
+            if (t.getIssuedAt().isAfter(lastMonthStart) && t.getIssuedAt().isBefore(currentMonthStart)) {
                 points[0] += calculateSingleTransaction(t);
-            } else if (t.getIssuedAt().isAfter(lastLastMonth) && t.getIssuedAt().isBefore(lastMonth)) {
+                // calculate two months ago transaction
+            } else if (t.getIssuedAt().isAfter(twoMonthsAgoStart) && t.getIssuedAt().isBefore(lastMonthStart)) {
                 points[1] += calculateSingleTransaction(t);
-            } else if (t.getIssuedAt().isBefore(lastLastMonth)) {
+                // calculate three months ago transaction
+            } else if (t.getIssuedAt().isAfter(threeMonthsAgoStart) && t.getIssuedAt().isBefore(twoMonthsAgoStart)) {
                 points[2] += calculateSingleTransaction(t);
+            }
+            // check if the results exceed Integer.MAX_VALUE
+            if (points[0] > Integer.MAX_VALUE || points[1] > Integer.MAX_VALUE ||
+                    points[2] > Integer.MAX_VALUE || points[0] + points[1] + points[2] > Integer.MAX_VALUE) {
+                throw new RewardPointsCalculationOverflowException(transactions.toString());
             }
         });
 
         RewardPointsEntity result = RewardPointsEntity.builder()
-                .lastMonth(points[0])
-                .lastLastMonth(points[1])
-                .lastLastLastMonth(points[2])
-                .total(points[0] + points[1] + points[2])
+                .lastMonth((int) points[0])
+                .twoMonthsAgo((int) points[1])
+                .threeMonthsAgo((int) points[2])
+                .total((int) (points[0] + points[1] + points[2]))
                 .build();
         log.info("Calculate reward points based on BaseRewardCalculation for customer: {}, result: {}", customerId, result);
         return result;
@@ -57,17 +72,23 @@ public class BaseRewardCalculation extends RewardCalculationBase implements IRew
 
     private int calculateSingleTransaction(RewardTransactionEntity rewardTransactionEntity) {
         BigDecimal total = rewardTransactionEntity.getAmount();
-        int points = 0;
+        if (total.compareTo(BigDecimal.valueOf(0)) < 0) {
+            throw new NegativeTransactionAmountException(rewardTransactionEntity.toString());
+        }
+        BigDecimal points = BigDecimal.valueOf(0);
         if (total.compareTo(SECOND_LEVEL) > 0) { // higher than 100
             BigDecimal second = total.subtract(SECOND_LEVEL).multiply(SECOND_POINT);
-            points += second.intValue();
+            points = points.add(second);
             total = SECOND_LEVEL;
         }
 
         if (total.compareTo(FIRST_LEVEL) > 0) { // higher than 50
             BigDecimal first = total.subtract(FIRST_LEVEL).multiply(FIRST_POINT);
-            points += first.intValue();
+            points = points.add(first);
         }
-        return points;
+        if (points.compareTo(BigDecimal.valueOf(Integer.MAX_VALUE)) > 0) {
+            throw new RewardPointsCalculationOverflowException(rewardTransactionEntity.toString());
+        }
+        return points.intValue();
     }
 }

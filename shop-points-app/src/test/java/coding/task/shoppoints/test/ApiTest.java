@@ -9,12 +9,14 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * @description:
+ * @description: Api test
  * @author: Ryan Mei
  * @date: 4/5/24
  */
@@ -40,6 +42,16 @@ public class ApiTest {
 
     ObjectMapper mapper = new ObjectMapper();
 
+    @Value("${app.config.api-version}")
+    private String apiVersion;
+
+    private String urlPrefix;
+
+    @PostConstruct
+    public void init() {
+        urlPrefix = "/" + apiVersion;
+    }
+
     // Create a single transaction test
     @Test
     @Order(1)
@@ -51,9 +63,9 @@ public class ApiTest {
                 .build();
 
         mvc.perform(MockMvcRequestBuilders
-                .post("/shop/transaction")
-                .content(mapper.writeValueAsString(transactionDto))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .post(urlPrefix + "/shop/transaction")
+                        .content(mapper.writeValueAsString(transactionDto))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());
 
@@ -69,7 +81,7 @@ public class ApiTest {
                 .amount(BigDecimal.valueOf(120)).build();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction")
+                        .post(urlPrefix + "/shop/transaction")
                         .content(mapper.writeValueAsString(transactionDto1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -81,7 +93,7 @@ public class ApiTest {
                 .amount(BigDecimal.valueOf(120)).build();
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction")
+                        .post(urlPrefix + "/shop/transaction")
                         .content(mapper.writeValueAsString(transactionDto2))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -100,7 +112,7 @@ public class ApiTest {
                 .amount(BigDecimal.valueOf(220)).build();
 
         mvc.perform(MockMvcRequestBuilders
-                        .patch("/shop/transaction")
+                        .patch(urlPrefix + "/shop/transaction")
                         .content(mapper.writeValueAsString(transactionDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -115,7 +127,7 @@ public class ApiTest {
                 .amount(BigDecimal.valueOf(220)).build();
 
         mvc.perform(MockMvcRequestBuilders
-                        .patch("/shop/transaction")
+                        .patch(urlPrefix + "/shop/transaction")
                         .content(mapper.writeValueAsString(transactionDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -139,7 +151,7 @@ public class ApiTest {
         transactions.add(transactionDto2);
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction/batch")
+                        .post(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(transactions))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -161,7 +173,7 @@ public class ApiTest {
         transactions.add(transactionDto2);
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction/batch")
+                        .post(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(transactions))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -174,7 +186,7 @@ public class ApiTest {
     public void testCreateTransactionBatch_EmptyTransactions() throws Exception {
 
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction/batch")
+                        .post(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(new ArrayList<>()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -199,7 +211,7 @@ public class ApiTest {
         transactions.add(transactionDto2);
 
         mvc.perform(MockMvcRequestBuilders
-                        .patch("/shop/transaction/batch")
+                        .patch(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(transactions))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -220,7 +232,7 @@ public class ApiTest {
         transactions.add(transactionDto2);
 
         mvc.perform(MockMvcRequestBuilders
-                        .patch("/shop/transaction/batch")
+                        .patch(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(transactions))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -232,7 +244,7 @@ public class ApiTest {
     @Order(10)
     public void testUpdateTransactionBatch_EmptyTransactions() throws Exception {
         mvc.perform(MockMvcRequestBuilders
-                        .post("/shop/transaction/batch")
+                        .post(urlPrefix + "/shop/transaction/batch")
                         .content(mapper.writeValueAsString(new ArrayList<>()))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -244,7 +256,7 @@ public class ApiTest {
     @Order(11)
     public void testGetRewardPoints() throws Exception {
         mvc.perform(MockMvcRequestBuilders
-                        .get("/shop/reward/1")
+                        .get(urlPrefix + "/shop/reward/1")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk());

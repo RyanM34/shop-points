@@ -1,5 +1,7 @@
 package coding.task.shoppoints.aop;
 
+import coding.task.shoppoints.common.exceptions.NegativeTransactionAmountException;
+import coding.task.shoppoints.common.exceptions.RewardPointsCalculationOverflowException;
 import coding.task.shoppoints.common.exceptions.TransactionNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -59,4 +61,19 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    // handle reward points calculation overflow exception error
+    @ExceptionHandler(value = {RewardPointsCalculationOverflowException.class})
+    public ResponseEntity handleException(RewardPointsCalculationOverflowException e){
+        log.error("An exception occurred: {}", e.toString());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+    }
+
+    // handle NegativeTransactionAmountException exception error
+    @ExceptionHandler(value = {NegativeTransactionAmountException.class})
+    public ResponseEntity handleException(NegativeTransactionAmountException e){
+        log.error("An exception occurred: {}", e.toString());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(e.getMessage());
+    }
 }
