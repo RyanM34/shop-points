@@ -13,9 +13,9 @@
 3. Open H2 DB console http://localhost:8080/h2-console
 4. Login with url, username and password in shop-points-app/src/main/resources/application.yml
 5. Run sql query in docs/shop_points.sql for providing test data
-6. Or use Postman to test the api, see the controller in shop-points-trigger module
-   * http://localhost:8080/shop/reward/1 GET
-   * http://localhost:8080/shop/transaction POST, create single transaction
+6. Use Postman to test the api, see the controller in shop-points-trigger module
+   * http://localhost:8080/v1/shop/reward/1 GET
+   * http://localhost:8080/v1/shop/transaction POST, create single transaction
      ```json
      {
         "customerId": 1,
@@ -23,14 +23,14 @@
         "issuedAt": "2024-03-05T19:48:30"
      }
      ```
-   * http://localhost:8080/shop/transaction PATCH, update single transaction
+   * http://localhost:8080/v1/shop/transaction PATCH, update single transaction
      ```json
      {
         "transactionId": 1,
         "amount": 110
      }
      ```
-   * http://localhost:8080/shop/transaction/batch POST, create a list of transactions
+   * http://localhost:8080/v1/shop/transaction/batch POST, create a list of transactions
      ```json
      [
       {
@@ -50,7 +50,7 @@
       }
      ]
      ```
-   * http://localhost:8080/shop/transaction/barch PATCH, update a list of transactions
+   * http://localhost:8080/v1/shop/transaction/barch PATCH, update a list of transactions
      ```json
      [
       {
