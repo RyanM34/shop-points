@@ -17,5 +17,8 @@
             <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <finalName>shop-points-common</finalName>
+    </build>
 
 </project>
