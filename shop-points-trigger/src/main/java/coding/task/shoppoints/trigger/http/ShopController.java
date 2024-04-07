@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @date: 4/5/24
  */
 @RestController
-@RequestMapping("/shop")
+@RequestMapping("/${app.config.api-version}/shop")
 @Slf4j
 @Validated
 public class ShopController {
