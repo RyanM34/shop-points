@@ -18,12 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 /**
- * @description: reward domain unit test
+ * @description: reward calculation unit test
  * @author: Ryan Mei
  * @date: 4/5/24
  */
 @Slf4j
-public class RewardUnitTest {
+public class RewardCalculationUnitTest {
 
     class MockBaseRewardCalculation extends BaseRewardCalculation {
         // override protected method
