@@ -38,4 +38,10 @@ public interface IShopService {
      * @return updated translations
      */
     List<ShopTransactionEntity> updateTransactions(List<ShopTransactionEntity> transactionEntities);
+
+    /**
+     * get all customer ids
+     * @return ids
+     */
+    List<Long> getAllUniqueCustomerIds();
 }

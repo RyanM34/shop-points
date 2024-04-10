@@ -99,4 +99,12 @@ public class ShopController {
         return ResponseEntity.ok(rewardPoints);
     }
 
+    @GetMapping("reward/summary")
+    public ResponseEntity getRewardPointsSummary() {
+        List<Long> customerIds = shopService.getAllUniqueCustomerIds();
+        List<RewardPointsEntity> summary =  rewardService.getRewardPointsSummary(customerIds, RewardCalculationType.BASE_STRATEGY);
+        return ResponseEntity.ok(summary);
+    }
+
 }
+

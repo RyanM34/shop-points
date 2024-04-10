@@ -35,4 +35,5 @@ public class RewardRepository implements IRewardRepository {
                         .build())
                 .collect(Collectors.toList());
     }
+
 }

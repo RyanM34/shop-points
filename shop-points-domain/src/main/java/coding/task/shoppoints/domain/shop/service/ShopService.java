@@ -40,4 +40,9 @@ public class ShopService implements IShopService {
         return shopRepository.updateTransactions(transactionEntities);
     }
 
+    @Override
+    public List<Long> getAllUniqueCustomerIds() {
+        return shopRepository.getAllUniqueCustomerIds();
+    }
+
 }

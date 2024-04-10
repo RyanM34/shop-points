@@ -17,4 +17,5 @@ public interface IRewardRepository {
      * @return last three months transactions
      */
     List<RewardTransactionEntity> getRecentThreeMonthsTransactions(Long customerId);
+
 }

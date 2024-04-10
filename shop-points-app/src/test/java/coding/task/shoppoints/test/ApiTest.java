@@ -159,7 +159,7 @@ public class ApiTest {
                 .issuedAt(LocalDateTime.now().minusMonths(1))
                 .amount(BigDecimal.valueOf(120)).build();
         ShopCreateTransactionDto transactionDto2 = ShopCreateTransactionDto.builder()
-                .customerId(1L)
+                .customerId(2L)
                 .issuedAt(LocalDateTime.now().minusMonths(2))
                 .amount(BigDecimal.valueOf(60)).build();
         List<ShopCreateTransactionDto> transactions = new ArrayList<>();
@@ -299,5 +299,17 @@ public class ApiTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    // Get reward points test (customerId = 1)
+    @Test
+    @Order(12)
+    public void testGetRewardPointsSummary() throws Exception {
+        mvc.perform(MockMvcRequestBuilders
+                        .get(urlPrefix + "/shop/reward/summary")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
 
 }

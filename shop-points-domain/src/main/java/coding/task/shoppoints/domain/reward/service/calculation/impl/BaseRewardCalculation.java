@@ -61,6 +61,7 @@ public class BaseRewardCalculation extends RewardCalculationBase implements IRew
         });
 
         RewardPointsEntity result = RewardPointsEntity.builder()
+                .customerId(customerId)
                 .lastMonth((int) points[0])
                 .twoMonthsAgo((int) points[1])
                 .threeMonthsAgo((int) points[2])

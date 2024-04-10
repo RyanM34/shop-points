@@ -127,4 +127,9 @@ public class ShopRepository implements IShopRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Long> getAllUniqueCustomerIds() {
+        return transactionDao.findAllUniqueCustomerIds();
+    }
+
 }

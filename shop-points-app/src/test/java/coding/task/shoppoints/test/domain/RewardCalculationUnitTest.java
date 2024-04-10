@@ -59,6 +59,7 @@ public class RewardCalculationUnitTest {
 
         // Create an expected object
         RewardPointsEntity expectedEntity = RewardPointsEntity.builder()
+                .customerId(1L)
                 .lastMonth(50)
                 .twoMonthsAgo(250)
                 .total(300)
@@ -101,6 +102,7 @@ public class RewardCalculationUnitTest {
 
         // Create an expected object
         RewardPointsEntity expectedEntity = RewardPointsEntity.builder()
+                .customerId(1L)
                 .lastMonth(20)
                 .twoMonthsAgo(90)
                 .threeMonthsAgo(290)
@@ -126,6 +128,7 @@ public class RewardCalculationUnitTest {
 
         // Create an empty expected object
         RewardPointsEntity expectedEntity = RewardPointsEntity.builder()
+                .customerId(1L)
                 .build();
 
         assertEquals(expectedEntity, rewardPointsEntity);
@@ -165,6 +168,7 @@ public class RewardCalculationUnitTest {
 
         // Create an expected object
         RewardPointsEntity expectedEntity = RewardPointsEntity.builder()
+                .customerId(1L)
                 .build();
 
         assertEquals(expectedEntity, rewardPointsEntity);
@@ -248,6 +252,7 @@ public class RewardCalculationUnitTest {
 
         // Create an expected object
         RewardPointsEntity expectedEntity = RewardPointsEntity.builder()
+                .customerId(1L)
                 .twoMonthsAgo(50)
                 .total(50)
                 .build();

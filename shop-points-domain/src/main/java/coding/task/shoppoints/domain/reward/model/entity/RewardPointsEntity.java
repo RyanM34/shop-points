@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class RewardPointsEntity {
+    private long customerId;
     private int lastMonth;
     private int twoMonthsAgo;
     private int threeMonthsAgo;

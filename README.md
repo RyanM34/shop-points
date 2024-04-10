@@ -15,6 +15,7 @@
 5. Run sql query in docs/shop_points.sql for providing test data
 6. Use Postman to test the api, see the controller in shop-points-trigger module
    * http://localhost:8080/v1/shop/reward/1 GET
+   * http://localhost:8080/v1/shop/reward/summary GET
    * http://localhost:8080/v1/shop/transaction POST, create single transaction
      ```json
      {
