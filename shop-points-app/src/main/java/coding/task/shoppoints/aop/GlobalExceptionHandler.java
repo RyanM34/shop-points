@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {TransactionNotFoundException.class})
     public ResponseEntity handleException(TransactionNotFoundException e){
         log.error("An exception occurred: {}", e.toString());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
 

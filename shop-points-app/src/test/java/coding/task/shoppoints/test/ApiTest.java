@@ -134,6 +134,22 @@ public class ApiTest {
                 .andExpect(status().isBadRequest());
     }
 
+    // Update a single transaction test with invalid transactionId
+    @Test
+    @Order(4)
+    public void testUpdateTransaction_InvalidTransactionId() throws Exception {
+        ShopUpdateTransactionDto transactionDto = ShopUpdateTransactionDto.builder()
+                .transactionId(100L)
+                .amount(BigDecimal.valueOf(220)).build();
+
+        mvc.perform(MockMvcRequestBuilders
+                        .patch(urlPrefix + "/shop/transaction")
+                        .content(mapper.writeValueAsString(transactionDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
     // Create a list of transactions test
     @Test
     @Order(5)
@@ -218,11 +234,33 @@ public class ApiTest {
                 .andExpect(status().isOk());
     }
 
-    // Update a list of transactions including one invalid transaction test
+    // Update a list of transactions including one null transaction test
     @Test
     @Order(9)
     public void testUpdateTransactionBatch_NullTransactionId() throws Exception {
         ShopUpdateTransactionDto transactionDto1 = ShopUpdateTransactionDto.builder()
+                .amount(BigDecimal.valueOf(220)).build(); // invalid transaction
+        ShopUpdateTransactionDto transactionDto2 = ShopUpdateTransactionDto.builder()
+                .transactionId(1L)
+                .amount(BigDecimal.valueOf(160)).build();
+        List<ShopUpdateTransactionDto> transactions = new ArrayList<>();
+        transactions.add(transactionDto1);
+        transactions.add(transactionDto2);
+
+        mvc.perform(MockMvcRequestBuilders
+                        .patch(urlPrefix + "/shop/transaction/batch")
+                        .content(mapper.writeValueAsString(transactions))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    // Update a list of transactions including one invalid transactionId test
+    @Test
+    @Order(9)
+    public void testUpdateTransactionBatch_InvalidTransactionId() throws Exception {
+        ShopUpdateTransactionDto transactionDto1 = ShopUpdateTransactionDto.builder()
+                .transactionId(100L)
                 .amount(BigDecimal.valueOf(220)).build(); // invalid transaction
         ShopUpdateTransactionDto transactionDto2 = ShopUpdateTransactionDto.builder()
                 .transactionId(1L)
