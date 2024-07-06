@@ -35,6 +35,8 @@ public class ShopController {
 
     private String ryan;
 
+    private String hao3;
+
     private String ryan2;
 
     @Resource
