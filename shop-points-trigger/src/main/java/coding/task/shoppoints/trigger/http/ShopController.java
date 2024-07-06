@@ -7,6 +7,8 @@ import coding.task.shoppoints.domain.shop.model.entity.ShopTransactionEntity;
 import coding.task.shoppoints.domain.shop.service.IShopService;
 import coding.task.shoppoints.trigger.dto.ShopCreateTransactionDto;
 import coding.task.shoppoints.trigger.dto.ShopUpdateTransactionDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/${app.config.api-version}/shop")
 @Slf4j
 @Validated
+@Api(tags = "ShopController", description = "ShopController API")
 public class ShopController {
 
     private String ryan;
@@ -42,6 +45,7 @@ public class ShopController {
 
 
     @PostMapping("transaction")
+    @ApiOperation("Create an transaction")
     public ResponseEntity createTransaction(@RequestBody @Valid ShopCreateTransactionDto transactionDto) {
         // build query params
         ShopTransactionEntity shopTransactionEntity = ShopTransactionEntity.builder()
