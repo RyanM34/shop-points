@@ -35,6 +35,8 @@ public class ShopController {
 
     private String ryan;
 
+    private String test2;
+
     @Resource
     private IShopService shopService;
 
