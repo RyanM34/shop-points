@@ -36,6 +36,8 @@ public class ShopController {
 
     private String ryanRebase;
 
+    private String hao3;
+
     @Resource
     private IShopService shopService;
 
