@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @Validated
 @Api(tags = "ShopController", description = "ShopController API")
 public class ShopController {
-    private String ryanTest2;
+    private String ryanTest3;
 
     @Resource
     private IShopService shopService;
