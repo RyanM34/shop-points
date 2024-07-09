@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 public class ShopController {
     private String ryanTest4;
 
+    private String ryanRebase;
+
     @Resource
     private IShopService shopService;
 
